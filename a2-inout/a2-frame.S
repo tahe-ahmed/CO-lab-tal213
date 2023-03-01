@@ -24,10 +24,19 @@
 
 my_main:
         # set up the stack frame
+        pushq   %rbp                # store the caller's base pointer
+        movq    %rsp, %rbp          # initialize the base pointer
 
         call    inout                
 
         # clear the stack and return
+
+        movq %rbp, %rsp
+        popq %rbp
+
+        movq $60, %rax
+        movq $0, %rdi
+        syscall
 
 inout:
         # read input and increment it using my_increment
@@ -36,5 +45,9 @@ inout:
 
         # output incremented number
 
+        ret
+
 my_increment:
         # IMPLEMENT ME
+
+        ret
