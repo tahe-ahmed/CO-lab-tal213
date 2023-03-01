@@ -16,8 +16,12 @@
     exit: jmp _exit
 #endif
 
+.data
+mystring : .asciz "%d\n"
+
 .text
 # your strings here
+formatstr: .asciz "%d"
 
 .global my_main                         # make my_main accessible globally
 .global my_increment                    # make my_increment accessible globally
@@ -41,10 +45,27 @@ my_main:
 inout:
         # read input and increment it using my_increment
 
-        call    my_increment
+        pushq %rbp                       # store the caller's base pointer
+	movq %rsp, %rbp                  # initialize the base pointer
+
+        subq $16, %rsp 
+       
+        leaq -8(%rbp), %rsi                     # -8(%rbp) hold input
+        leaq formatstr(%rip), %rdi
+        movq $0, %rax
+        call scanf
+          
+        movq -8(%rbp), %rdi
+        call my_increment
 
         # output incremented number
+        leaq mystring(%rip), %rdi       # first argument the string from data (load address of mystring  into rdi)
+        movq %rax , %rsi                 # second argument 
+        movq $0, %rax                   # no vector arguments                        
+        call printf 
 
+        movq %rbp, %rsp
+        popq %rbp
         ret
 
 my_increment:
