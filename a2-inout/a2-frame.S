@@ -70,5 +70,12 @@ inout:
 
 my_increment:
         # IMPLEMENT ME
+        pushq   %rbp                
+	movq    %rsp, %rbp          
 
+        incq %rdi
+        movq %rdi, %rax
+
+        movq %rbp, %rsp
+        popq %rbp
         ret
