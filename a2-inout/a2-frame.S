@@ -38,13 +38,11 @@ my_main:
         movq %rbp, %rsp
         popq %rbp
 
-        movq $60, %rax
-        movq $0, %rdi
-        syscall
+        mov     $0, %rdi            # load program exit code
+	call    exit                # exit the program
 
 inout:
         # read input and increment it using my_increment
-
         pushq %rbp                       # store the caller's base pointer
 	movq %rsp, %rbp                  # initialize the base pointer
 
@@ -69,13 +67,9 @@ inout:
         ret
 
 my_increment:
-        # IMPLEMENT ME
-        pushq   %rbp                
-	movq    %rsp, %rbp          
+        # IMPLEMENT ME    
 
-        incq %rdi
-        movq %rdi, %rax
+        incq %rdi                      # increment the param %rdi 
+        movq %rdi, %rax                # return the incremented number with %rax
 
-        movq %rbp, %rsp
-        popq %rbp
         ret
