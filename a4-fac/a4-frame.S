@@ -34,12 +34,18 @@ my_main:
 
     call inout
         
+        # output incremented number
+    leaq mystring(%rip), %rdi   
+    movq %rax, %rsi         
+    movq $0, %rax                                    
+    call printf 
+
     movq %rbp, %rsp
     popq %rbp
 
-    movq $60, %rax
-    movq $0, %rdi
-    syscall
+    # clear the stack and return
+    mov   $0, %rdi            
+	call  exit 
 
 inout:
     pushq %rbp                # store the caller's base pointer
@@ -55,43 +61,45 @@ inout:
     movq -8(%rbp), %rdi
     call factorial
 
-    # output incremented number
-    leaq mystring(%rip), %rdi   # first argument the string from data (load address of mystring  into rdi)
-    movq %rax, %rsi         # second argument the student number
-    movq $0, %rax               # no vector arguments                        
-    call printf 
-
+    
     movq %rbp, %rsp
     popq %rbp
     ret
 
 factorial:
-        # IMPLEMENT ME
-// pushq %rbp
-    // movq %rsp, %rbp
-    
-    // movq $8, %rsp
 
-    // movq %rdi, %rax
+    pushq %rbp               
+    movq %rsp, %rbp        
+ 
+    subq $16, %rsp 
+
+    movq %rdi, -8(%rbp)
+    
+
+    cmpq $0, %rdi
+    je return1
+
     cmpq $1, %rdi
     je base_case
-
-
-    // subq $1, %rax
-    // movq %rax, %rdi 
-    movq %rdi, %rbx
-    mul %rbx
+    
     dec %rdi
     call factorial
-    // cmpq $0, -8(%rbp)
-    // subq $1, -8(%rbp)
-    // movq -8(%rbp), %rdi
-    // jg factorial
+    movq -8(%rbp), %r8
+    mul %r8
 
-    // movq $1, %rax
+     movq %rbp, %rsp
+    popq %rbp
+    ret
 
 base_case:
-    // movq %rbp, %rsp
-    // popq %rbp
+    movq $1, %rax
+    movq %rbp, %rsp
+    popq %rbp
     ret
-        # IMPLEMENT ME
+
+return1:
+    movq $1, %rax
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+
