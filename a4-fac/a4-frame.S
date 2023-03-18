@@ -28,13 +28,11 @@ formatstr: .asciz "%ld"
 
 
 my_main:
-        # IMPLEMENT ME
     pushq %rbp                # store the caller's base pointer
     movq %rsp, %rbp          # initialize the base pointer
 
     call inout
         
-        # output incremented number
     leaq mystring(%rip), %rdi   
     movq %rax, %rsi         
     movq $0, %rax                                    
@@ -51,43 +49,37 @@ inout:
     pushq %rbp                # store the caller's base pointer
     movq %rsp, %rbp          # initialize the base pointer
     subq $16, %rsp 
-    # read input and increment it using my_increment
     
-    leaq -8(%rbp), %rsi                     # -8(%rbp) hold input
+    leaq -8(%rbp), %rsi                    
     leaq formatstr(%rip), %rdi
     movq $0, %rax
     call scanf
         
     movq -8(%rbp), %rdi
     call factorial
-
     
     movq %rbp, %rsp
     popq %rbp
     ret
 
 factorial:
-
     pushq %rbp               
     movq %rsp, %rbp        
- 
-    subq $16, %rsp 
 
-    movq %rdi, -8(%rbp)
-    
+    push %rdi           # push the params to the stack 
 
-    cmpq $0, %rdi
+    cmpq $0, %rdi       # if the argument i s zero return 1 
     je return1
 
-    cmpq $1, %rdi
+    cmpq $1, %rdi       # if the argument is 1 return the base case
     je base_case
     
     dec %rdi
     call factorial
-    movq -8(%rbp), %r8
+    pop %r8
     mul %r8
 
-     movq %rbp, %rsp
+    movq %rbp, %rsp
     popq %rbp
     ret
 
